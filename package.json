@@ -1,0 +1,20 @@
+{
+  "name": "middleman",
+  "version": "1.0.0",
+  "description": "Middleman is a peer-reviewed discord bot that puts humans to work approving image-apis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CollierDevs/Middleman.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CollierDevs/Middleman/issues"
+  },
+  "homepage": "https://github.com/CollierDevs/Middleman#readme"
+}
