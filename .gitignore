@@ -50,6 +50,9 @@ typings/
 # Optional npm cache directory
 .npm
 
+# PNPM Related
+pnpm-lock.yaml
+
 # Optional eslint cache
 .eslintcache
 
