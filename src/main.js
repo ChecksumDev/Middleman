@@ -34,8 +34,8 @@ client.on("ready", async () => {
     logger.log(`${client.user.tag} (${client.user.id}) logged into the Discord API!`)
     client.user.setPresence({
         activity: {
-            name: "the hentai industry.",
-            type: "COMPETING"
+            name: "with Jeztec.",
+            type: "PLAYING"
         },
         status: "dnd",
     })
