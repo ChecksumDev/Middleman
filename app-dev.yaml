@@ -1,5 +1,6 @@
 runtime: nodejs12
 instance_class: F1
+env: flex
 automatic_scaling:
   min_num_instances: 1
   max_num_instances: 1
