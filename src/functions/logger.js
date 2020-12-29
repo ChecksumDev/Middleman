@@ -14,11 +14,6 @@ GNU General Public License for more details.
 */
 
 const chalk = require('chalk');
-let { version } = require('../package.json');
-
-function splash() {
-    console.log(chalk.redBright(`Loading Middleman...\nVersion ${version}\n`))
-}
 
 function debug(data) {
     if (!data) process.exit(1);
@@ -41,7 +36,6 @@ function error(data) {
 }
 
 module.exports = {
-    splash,
     debug,
     log,
     warn,

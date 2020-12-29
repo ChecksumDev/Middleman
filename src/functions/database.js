@@ -13,9 +13,22 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-fs = require('fs')
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize('database', 'user', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	// SQLite only
+	storage: 'database.sqlite',
+});
 
-const myArgs = process.argv.slice(2)
-const buf = Buffer.from(myArgs[0], 'base64')
+const Images = sequelize.define('images', {
+	url: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+	rating: Sequelize.STRING,
+	author: Sequelize.STRING,
+});
 
-fs.appendFileSync('.env', buf.toString())
+exports.Images = Images;
