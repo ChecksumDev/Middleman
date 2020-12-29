@@ -23,7 +23,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 exports.client = client;
 
-// Image API"s
+// Image API's
 const { sendImage } = require("./functions/sendImage");
 const { Images } = require("./functions/database");
 
