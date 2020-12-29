@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const { client } = require("../main");
 const { Images } = require('./database');
+const logger = require("./logger");
 
 const Nekos = require('nekos.life');
 const nekos = new Nekos();
@@ -23,7 +24,10 @@ async function sendImage(message) {
     let urlcache = url;
 
     const result = await Images.findOne({ where: { url: urlcache } });
-    if (result) return sendImage(message);
+    if (result) {
+        logger.log(`Skipping ${urlcache} | Image already reviewed.`)
+        return sendImage(message);
+    }
 
     let embed = new Discord.MessageEmbed()
         .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
@@ -43,9 +47,10 @@ async function sendImage(message) {
         await msg.react("✅");
         await msg.react("🔞");
         await msg.react("⛔");
+        await msg.react("➡️");
 
         const filter = (reaction) => {
-            return ["✅", "🔞", "⛔"].includes(reaction.emoji.name);
+            return ["✅", "🔞", "⛔", "➡️"].includes(reaction.emoji.name);
         };
 
         msg.awaitReactions(filter, { max: 1 })
@@ -53,6 +58,7 @@ async function sendImage(message) {
                 const reaction = collected.first();
 
                 if (reaction.emoji.name === "✅") {
+                    logger.log(`${urlcache} was marked as SFW by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -75,6 +81,7 @@ async function sendImage(message) {
                             }])
                             .setFooter(`Image ID: ${image.get('id')}`)
                             .setTimestamp();
+                        await msg.reactions.removeAll();
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         return sendImage(message);
@@ -86,6 +93,7 @@ async function sendImage(message) {
                         return message.channel.send('Something seirously wrong has occured, please contact Jeztec.\nThis error should be impossible to produce.');
                     }
                 } else if (reaction.emoji.name == "🔞") {
+                    logger.log(`${urlcache} was marked as NSFW by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -108,6 +116,7 @@ async function sendImage(message) {
                             }])
                             .setFooter(`Image ID: ${image.get('id')}`)
                             .setTimestamp();
+                        await msg.reactions.removeAll();
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         return sendImage(message);
@@ -119,6 +128,7 @@ async function sendImage(message) {
                         return message.channel.send('Something seirously wrong has occured, please contact Jeztec.\nThis error should be impossible to produce.');
                     }
                 } else if (reaction.emoji.name == "⛔") {
+                    logger.log(`${urlcache} was marked as LOLI by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -138,9 +148,10 @@ async function sendImage(message) {
                                 value: `${reaction.users.cache.last().tag} (${reaction.users.cache.last().id})`,
                                 inline: true
                             }])
-                            .setColor("PINK")
+                            .setColor("PURPLE")
                             .setFooter(`Image ID: ${image.get('id')}`)
                             .setTimestamp();
+                        await msg.reactions.removeAll();
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         return sendImage(message);
@@ -151,6 +162,25 @@ async function sendImage(message) {
                         }
                         return message.channel.send('Something seirously wrong has occured, please contact Jeztec.\nThis error should be impossible to produce.');
                     }
+                } else if (reaction.emoji.name == "➡️") {
+                    let embed = new Discord.MessageEmbed()
+                        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+                        .addFields([{
+                            name: 'Rating',
+                            value: 'Skipped',
+                            inline: true,
+                        }, {
+                            name: 'Author',
+                            value: `Skipped`,
+                            inline: true,
+                        }])
+                        .setImage(`${url}`)
+                        .setColor("BLUE")
+                        .setFooter("© Copyright CollierDevs 2020");
+                    await msg.reactions.removeAll();
+                    await msg.edit(embed);
+                    await msg.reactions.removeAll();
+                    return sendImage(message);
                 }
             });
     });

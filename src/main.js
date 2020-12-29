@@ -54,7 +54,7 @@ client.on("message", async (message) => {
     }
 
     if (command == "delete-image") {
-        if (message.author.id !== '573909482619273255') return message.reply("No permission.")
+        if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
         const image = await Images.findOne({ where: { id: args[0] } });
         if (!image) return message.reply("That image has not been reviewed yet.");
 
