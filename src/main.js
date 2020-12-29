@@ -52,6 +52,20 @@ client.on("message", async (message) => {
         await message.delete();
     }
 
+    if (command == "fav") {
+        if (!message.guild.id == '793034391738777670') return;
+        if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
+        const image = await Images.findOne({ where: { id: args[0] } });
+        let embed = new Discord.MessageEmbed()
+            .setAuthor("Starboard", "https://2.bp.blogspot.com/-hsuemZmkYBo/WJibJn2XtFI/AAAAAAAAAEc/zNVuRLIoq4o_WV6QMMOqx-gOfmbsFXYJgCLcB/s1600/star-icon.png")
+            .setImage(`${image.url}`)
+            .setColor("YELLOW")
+            .setFooter("© Copyright CollierDevs 2020");
+        await client.channels.cache.get('793337358866055178').send(embed).then(() => {
+            message.reply(`Successfully starred image **${image.id}**.`)
+        })
+    }
+
     if (command == "delete-image") {
         if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
         const image = await Images.findOne({ where: { id: args[0] } });
