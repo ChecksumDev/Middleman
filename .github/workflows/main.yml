@@ -16,7 +16,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 12
       - run: npm install
       - name: Generate environment variables file
         run: node generate-vars.js "${{ secrets.ENV_VARIABLES }}"
