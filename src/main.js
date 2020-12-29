@@ -13,7 +13,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-
 // Static Deps
 require("dotenv").config();
 const logger = require("./functions/logger");

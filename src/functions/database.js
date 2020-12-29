@@ -14,12 +14,11 @@ GNU General Public License for more details.
 */
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
+const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
+	host: `${process.env.DB_HOST}`,
+	dialect: 'postgres',
 	logging: false,
-	// SQLite only
-	storage: 'database.sqlite',
+	// storage: 'database.sqlite',
 });
 
 const Images = sequelize.define('images', {
