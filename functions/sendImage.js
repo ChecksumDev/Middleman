@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { client } = require("../main");
+const { client } = require("../server");
 const { Images } = require('./database');
 const logger = require("./logger");
 

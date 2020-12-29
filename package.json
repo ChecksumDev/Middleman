@@ -2,9 +2,9 @@
   "name": "middleman",
   "version": "1.0.0",
   "description": "Middleman is a peer-reviewed discord bot that puts humans to work approving image-apis.",
-  "main": "src/main.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./src/main.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

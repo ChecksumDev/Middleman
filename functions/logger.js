@@ -14,7 +14,7 @@ GNU General Public License for more details.
 */
 
 const chalk = require('chalk');
-let { version } = require('../../package.json');
+let { version } = require('../package.json');
 
 function splash() {
     console.log(chalk.redBright(`Loading Middleman...\nVersion ${version}\n`))
