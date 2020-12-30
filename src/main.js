@@ -23,7 +23,6 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 exports.client = client;
 
-// Image API's
 const { sendImage } = require("./functions/sendImage");
 const { Images } = require("./functions/database");
 
@@ -47,7 +46,7 @@ client.on("message", async (message) => {
     const command = args.shift().toLowerCase();
 
     if (command == "start-review") {
-        if (message.channel.id !== '793035359599460353') return message.reply("You cannot review images in this channel.");
+        if (message.guild.id !== '793034391738777670') return message.reply("You cannot review images in this channel.");
         sendImage(message);
         await message.delete();
     }

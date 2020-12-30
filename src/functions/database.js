@@ -12,12 +12,12 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
-
+const logger = require('./logger');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
 	dialect: 'postgres',
-	logging: true,
+	logging: logger.debug,
 	// storage: 'database.sqlite',
 });
 
