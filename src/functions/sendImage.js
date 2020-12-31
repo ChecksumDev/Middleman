@@ -20,23 +20,9 @@ const logger = require("./logger");
 
 
 // Image APIs
-const Nekos = require('nekos.life');
-const nekos = new Nekos();
 const Danbooru = require('danbooru')
-const booru = new Danbooru('danbooru.me')
+const booru = new Danbooru();
 
-async function getNeko() {
-    // // Generate a random number cause I suck at coding.
-    // let random = Math.floor(Math.random() * 100)
-
-    // if (random >= 50) { // If greater than 50
-    //     let img = await nekos.nsfw.hentai(); // Generate nsfw-classified neko.
-    //     return img.url;
-    // } else if (random <= 50) { // If less than 50
-    //     let img = await nekos.sfw.neko(); // Generate sfw-classified neko.
-    //     return img.url;
-    // }
-}
 async function sendImage(message) {
     let urlcache = null;
     await booru.posts({ tags: '1girl', limit: 10000 }).then(posts => {
@@ -55,7 +41,7 @@ async function sendImage(message) {
     }
 
     let embed = new Discord.MessageEmbed()
-        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
         .addFields([{
             name: 'Rating',
             value: 'None',
@@ -92,7 +78,7 @@ async function sendImage(message) {
                             author: `${reaction.users.cache.last().id}`,
                         });
                         let sfwembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setColor("GREEN")
                             .setImage(urlcache)
                             .addFields([{
@@ -128,7 +114,7 @@ async function sendImage(message) {
                             author: `${reaction.users.cache.last().id}`,
                         });
                         let nsfwembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setColor("RED")
                             .setImage(urlcache)
                             .addFields([{
@@ -164,7 +150,7 @@ async function sendImage(message) {
                             author: `${reaction.users.cache.last().id}`,
                         });
                         let loliembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setImage(urlcache)
                             .addFields([{
                                 name: "Rating",
@@ -192,7 +178,7 @@ async function sendImage(message) {
                     }
                 } else if (reaction.emoji.name == "➡️") {
                     let embed = new Discord.MessageEmbed()
-                        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+                        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                         .addFields([{
                             name: 'Rating',
                             value: 'Skipped',
