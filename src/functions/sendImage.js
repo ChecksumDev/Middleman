@@ -16,30 +16,22 @@ GNU General Public License for more details.
 const Discord = require("discord.js");
 const { client } = require("../main");
 const { Images } = require('./database');
+const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 
-
-// Image APIs
-const Danbooru = require('danbooru')
-const booru = new Danbooru();
-
 async function sendImage(message) {
-    let urlcache = null;
-    await booru.posts({ tags: '1girl', limit: 10000 }).then(posts => {
-        // Select a random post from posts array
-        const index = Math.floor(Math.random() * posts.length)
-        const post = posts[index]
-        urlcache = `${booru.url(post.file_url).href}`;
-    })
+    let urlcache = await getBooruImage();
+    let logch = client.channels.cache.get('793726527744245780');
 
     if (urlcache == 'https://danbooru.donmai.us/') return sendImage(message);
 
     const result = await Images.findOne({ where: { url: urlcache } });
     if (result) {
-        logger.log(`Skipping ${urlcache} | Image already reviewed.`)
+        logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
         return sendImage(message);
-    }
+    };
 
+    logger.log(`Sending ${urlcache} to be reviewed.`);
     let embed = new Discord.MessageEmbed()
         .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
         .addFields([{
@@ -52,8 +44,8 @@ async function sendImage(message) {
             inline: true,
         }])
         .setImage(`${urlcache}`)
-        .setColor("YELLOW")
-        .setFooter("© Copyright CollierDevs 2020");
+        .setColor("#004c4c")
+        .setFooter(`© Copyright CollierDevs 2020`);
     await message.channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
@@ -69,7 +61,7 @@ async function sendImage(message) {
                 const reaction = collected.first();
 
                 if (reaction.emoji.name === "✅") {
-                    logger.log(`${urlcache} was marked as SFW by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
+                    logger.log(`The image ${urlcache} was marked as SFW`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -95,7 +87,7 @@ async function sendImage(message) {
                         await msg.reactions.removeAll();
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
-                        client.channels.cache.get('793726527744245780').send(sfwembed)
+                        await logch.send(sfwembed)
                         return sendImage(message);
                     }
                     catch (e) {
@@ -105,7 +97,7 @@ async function sendImage(message) {
                         return sendImage(message);
                     }
                 } else if (reaction.emoji.name == "❌") {
-                    logger.log(`${urlcache} was marked as NSFW by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
+                    logger.log(`The image ${urlcache} was marked as NSFW`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -131,7 +123,7 @@ async function sendImage(message) {
                         await msg.reactions.removeAll();
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
-                        client.channels.cache.get('793726527744245780').send(nsfwembed)
+                        await logch.send(nsfwembed)
                         return sendImage(message);
                     }
                     catch (e) {
@@ -141,7 +133,7 @@ async function sendImage(message) {
                         return sendImage(message);
                     }
                 } else if (reaction.emoji.name == "⛔") {
-                    logger.log(`${urlcache} was marked as LOLI by ${reaction.users.cache.last().tag} (${reaction.users.cache.last().id}).`)
+                    logger.log(`The image ${urlcache} was marked as LOLI`)
                     try {
                         // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
                         const image = await Images.create({
@@ -167,7 +159,7 @@ async function sendImage(message) {
                         await msg.reactions.removeAll();
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
-                        client.channels.cache.get('793726527744245780').send(loliembed)
+                        await logch.send(loliembed)
                         return sendImage(message);
                     }
                     catch (e) {
@@ -190,7 +182,7 @@ async function sendImage(message) {
                         }])
                         .setImage(`${urlcache}`)
                         .setColor("BLUE")
-                        .setFooter("© Copyright CollierDevs 2020");
+                        .setFooter("© Copyright Middleman 2020");
                     await msg.reactions.removeAll();
                     await msg.edit(embed);
                     await msg.reactions.removeAll();
@@ -199,4 +191,5 @@ async function sendImage(message) {
             });
     });
 }
+
 exports.sendImage = sendImage;

@@ -32,8 +32,8 @@ client.on("ready", async () => {
     logger.log(`${client.user.tag} (${client.user.id}) logged into the Discord API!`)
     client.user.setPresence({
         activity: {
-            name: "with Jeztec.",
-            type: "PLAYING"
+            name: "Checksum#0001",
+            type: "WATCHING"
         },
         status: "dnd",
     })
@@ -45,21 +45,23 @@ client.on("message", async (message) => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    if (command == "start-review") {
+    if (command == "fix") {
         if (message.guild.id !== '793034391738777670') return message.reply("You cannot review images in this channel.");
-        sendImage(message);
+        if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
         await message.delete();
+        sendImage(message);
     }
 
     if (command == "fav") {
         if (!message.guild.id == '793034391738777670') return;
         if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
         const image = await Images.findOne({ where: { id: args[0] } });
+        if (!image) return message.reply("That image has not been reviewed yet.");
         let embed = new Discord.MessageEmbed()
             .setAuthor("Starboard", "https://2.bp.blogspot.com/-hsuemZmkYBo/WJibJn2XtFI/AAAAAAAAAEc/zNVuRLIoq4o_WV6QMMOqx-gOfmbsFXYJgCLcB/s1600/star-icon.png")
             .setImage(`${image.url}`)
             .setColor("YELLOW")
-            .setFooter("© Copyright CollierDevs 2020");
+            .setFooter("© Copyright Middleman 2020");
         await client.channels.cache.get('793337358866055178').send(embed).then(() => {
             message.reply(`Successfully starred image **${image.id}**.`)
         })

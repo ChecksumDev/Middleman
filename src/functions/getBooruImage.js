@@ -13,22 +13,17 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-const logger = require('./logger');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
-	host: `${process.env.DB_HOST}`,
-	dialect: 'postgres',
-	logging: false,
-	// storage: 'database.sqlite',
-});
+const Danbooru = require('danbooru');
+const booru = new Danbooru();
 
-const Images = sequelize.define('images', {
-	url: {
-		type: Sequelize.STRING,
-		unique: true,
-	},
-	rating: Sequelize.STRING,
-	author: Sequelize.STRING,
-});
-
-exports.Images = Images;
+async function getBooruImage() {
+    let urlcache = null;
+    await booru.posts({ tags: '1girl', limit: 10000 }).then(posts => {
+        // Select a random post from posts array.
+        const index = Math.floor(Math.random() * posts.length);
+        const post = posts[index];
+        urlcache = `${booru.url(post.file_url).href}`;
+    });
+    return urlcache;
+}
+exports.getBooruImage = getBooruImage;
