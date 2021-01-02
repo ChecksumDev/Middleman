@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CollierDevs/Middleman.git"
+    "url": "git+https://github.com/ChecksumDev/Middleman.git"
   },
   "keywords": [],
   "author": "",
   "license": "GPLv3",
   "bugs": {
-    "url": "https://github.com/CollierDevs/Middleman/issues"
+    "url": "https://github.com/ChecksumDev/Middleman/issues"
   },
-  "homepage": "https://github.com/CollierDevs/Middleman#readme",
+  "homepage": "https://github.com/ChecksumDev/Middleman#readme",
   "dependencies": {
     "chalk": "^4.1.0",
     "dabi-images": "^2.7.5",

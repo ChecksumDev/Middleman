@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 CollierDevs
+Copyright (C) 2020 ChecksumDev
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ async function sendImage(message) {
         }])
         .setImage(`${urlcache}`)
         .setColor("#004c4c")
-        .setFooter(`© Copyright CollierDevs 2020`);
+        .setFooter(`© Copyright ChecksumDev 2020`);
     await message.channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
