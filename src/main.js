@@ -39,6 +39,7 @@ client.once("ready", async () => {
     })
 
     client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
+        if (ch.name == 'review-log') return;
         if (!ch.name.startsWith("review")) return;
         await ch.send("The bot was restarted, rebooting review process.");
         sendImage(ch);
