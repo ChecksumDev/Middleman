@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,8 +14,7 @@ GNU General Public License for more details.
 */
 
 const Discord = require("discord.js");
-const path = require('path');
-const { measureMemory } = require("vm");
+const { extname } = require('path');
 const { client } = require("../main");
 const { Images } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
@@ -33,7 +32,7 @@ async function sendImage(channel) {
         return sendImage(channel);
     };
 
-    if (path.extname(urlcache) == '.mp4') return sendImage(channel) // Return if the file is a mp4
+    if (extname(urlcache) == '.mp4') return sendImage(channel) // Return if the file is a mp4
 
     logger.log(`Sending ${urlcache} to be reviewed.`);
     let embed = new Discord.MessageEmbed()
@@ -48,8 +47,8 @@ async function sendImage(channel) {
             inline: true,
         }])
         .setImage(`${urlcache}`)
-        .setColor("#004c4c")
-        .setFooter(`© Copyright ChecksumDev 2020`);
+        .setColor("#0D98BA")
+        .setFooter(`© Copyright Checksum 2020`);
     await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
@@ -186,7 +185,7 @@ async function sendImage(channel) {
                         }])
                         .setImage(`${urlcache}`)
                         .setColor("BLUE")
-                        .setFooter("© Copyright Middleman 2020");
+                        .setFooter("© Copyright Checksum 2020");
                     await msg.reactions.removeAll();
                     await msg.edit(embed);
                     await msg.reactions.removeAll();
