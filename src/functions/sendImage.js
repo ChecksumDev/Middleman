@@ -23,6 +23,7 @@ const logger = require("./logger");
 async function sendImage(channel) {
     let urlcache = await getBooruImage();
     let logch = client.channels.cache.get('793726527744245780');
+    let bannedexts = [".zip", ".mp4"]; // Deny these extensions (we do not support them) 
 
     if (urlcache == 'https://danbooru.donmai.us/') return sendImage(channel);
 
@@ -32,7 +33,7 @@ async function sendImage(channel) {
         return sendImage(channel);
     };
 
-    if (extname(urlcache) == '.mp4') return sendImage(channel) // Return if the file is a mp4
+    if (extname(urlcache).includes(bannedexts)) return sendImage(channel) // Return if the file extension is banned.
 
     logger.log(`Sending ${urlcache} to be reviewed.`);
     let embed = new Discord.MessageEmbed()
@@ -85,7 +86,7 @@ async function sendImage(channel) {
                                 value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
                                 inline: true
                             }])
-                            .setFooter(`Image ID: ${image.get('id')}`)
+                            .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
                         await msg.reactions.removeAll();
                         await msg.edit(sfwembed);
@@ -121,7 +122,7 @@ async function sendImage(channel) {
                                 value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
                                 inline: true
                             }])
-                            .setFooter(`Image ID: ${image.get('id')}`)
+                            .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
                         await msg.reactions.removeAll();
                         await msg.edit(nsfwembed);
@@ -157,7 +158,7 @@ async function sendImage(channel) {
                                 inline: true
                             }])
                             .setColor("PURPLE")
-                            .setFooter(`Image ID: ${image.get('id')}`)
+                            .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
                         await msg.reactions.removeAll();
                         await msg.edit(loliembed);

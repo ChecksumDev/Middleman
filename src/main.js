@@ -32,7 +32,7 @@ client.once("ready", async () => {
     logger.log(`${client.user.tag} (${client.user.id}) logged into the Discord API!`)
     client.user.setPresence({
         activity: {
-            name: "Checksum#0001",
+            name: "Anime girls",
             type: "WATCHING"
         },
         status: "dnd",
@@ -87,6 +87,16 @@ client.on("message", async (message) => {
         await client.channels.cache.get('793337358866055178').send(embed).then(() => {
             message.reply(`Successfully starred image **${image.id}**.`)
         })
+    }
+
+    if (command == "view-image") {
+        const image = await Images.findOne({ where: { id: args[0] } });
+        if (!image) return message.reply("That image has not been reviewed yet.");
+        let embed = new Discord.MessageEmbed()
+        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
+        .setImage(`${image.url}`)
+        .setColor("#0D98BA");
+        await message.reply(embed);
     }
 
     if (command == "delete-image") {

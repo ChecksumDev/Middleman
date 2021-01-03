@@ -18,7 +18,7 @@ const booru = new Danbooru();
 
 async function getBooruImage() {
     let urlcache = null;
-    await booru.posts({ tags: '1girl', limit: 10000 }).then(posts => {
+    await booru.posts({ tags: `${process.env.TAGS}`, limit: 90000, random: true }).then(posts => {
         // Select a random post from posts array.
         const index = Math.floor(Math.random() * posts.length);
         const post = posts[index];
