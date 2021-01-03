@@ -54,10 +54,10 @@ async function sendImage(channel) {
         await msg.react("✅");
         await msg.react("❌");
         await msg.react("⛔");
-        await msg.react("➡️");
+        await msg.react("❔");
 
         const filter = (reaction) => {
-            return ["✅", "❌", "⛔", "➡️"].includes(reaction.emoji.name);
+            return ["✅", "❌", "⛔", "❔"].includes(reaction.emoji.name);
         };
 
         msg.awaitReactions(filter, { max: 1 })
@@ -172,25 +172,41 @@ async function sendImage(channel) {
                         }
                         return sendImage(channel);
                     }
-                } else if (reaction.emoji.name == "➡️") {
-                    let embed = new Discord.MessageEmbed()
-                        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
-                        .addFields([{
-                            name: 'Rating',
-                            value: 'Skipped',
-                            inline: true,
-                        }, {
-                            name: "Reviewer",
-                            value: `Skipped`,
-                            inline: true,
-                        }])
-                        .setImage(`${urlcache}`)
-                        .setColor("BLUE")
-                        .setFooter("© Copyright Checksum 2020");
-                    await msg.reactions.removeAll();
-                    await msg.edit(embed);
-                    await msg.reactions.removeAll();
-                    return sendImage(channel);
+                } else if (reaction.emoji.name == "❔") {
+                    logger.log(`The image ${urlcache} was marked as MISC`)
+                    try {
+                        // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
+                        const image = await Images.create({
+                            url: urlcache,
+                            rating: 'MISC',
+                            author: `${reaction.users.cache.last().id}`,
+                        });
+                        let embed = new Discord.MessageEmbed()
+                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                            .addFields([{
+                                name: 'Rating',
+                                value: 'Image does not apply to classification.',
+                                inline: true,
+                            }, {
+                                name: "Reviewer",
+                                value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
+                                inline: true,
+                            }])
+                            .setImage(`${urlcache}`)
+                            .setColor("WHITE")
+                            .setFooter("© Copyright Checksum 2020");
+                        await msg.reactions.removeAll();
+                        await msg.edit(embed);
+                        await msg.reactions.removeAll();
+                        await logch.send(embed)
+                        return sendImage(channel);
+                    }
+                    catch (e) {
+                        if (e.name === 'SequelizeUniqueConstraintError') {
+                            return sendImage(channel);
+                        }
+                        return sendImage(channel);
+                    }
                 }
             });
     });
