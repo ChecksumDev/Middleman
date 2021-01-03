@@ -27,7 +27,7 @@ const { sendImage } = require("./functions/sendImage");
 const { Images } = require("./functions/database");
 
 
-client.on("ready", async () => {
+client.once("ready", async () => {
     Images.sync();
     logger.log(`${client.user.tag} (${client.user.id}) logged into the Discord API!`)
     client.user.setPresence({
@@ -37,6 +37,12 @@ client.on("ready", async () => {
         },
         status: "dnd",
     })
+
+    client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
+        if (!ch.name.startsWith("review")) return;
+        await ch.send("The bot was restarted, rebooting review process.");
+        sendImage(ch);
+    })
 });
 
 client.on("message", async (message) => {
@@ -44,13 +50,6 @@ client.on("message", async (message) => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
-
-    if (command == "fix") {
-        if (message.guild.id !== '793034391738777670') return message.reply("You cannot review images in this channel.");
-        if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
-        await message.delete();
-        sendImage(message);
-    }
 
     if (command == "eval") {
         if (message.author.id !== '573909482619273255') return message.reply("You're not my dad!");

@@ -14,22 +14,26 @@ GNU General Public License for more details.
 */
 
 const Discord = require("discord.js");
+const path = require('path');
+const { measureMemory } = require("vm");
 const { client } = require("../main");
 const { Images } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 
-async function sendImage(message) {
+async function sendImage(channel) {
     let urlcache = await getBooruImage();
     let logch = client.channels.cache.get('793726527744245780');
 
-    if (urlcache == 'https://danbooru.donmai.us/') return sendImage(message);
+    if (urlcache == 'https://danbooru.donmai.us/') return sendImage(channel);
 
     const result = await Images.findOne({ where: { url: urlcache } });
     if (result) {
         logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
-        return sendImage(message);
+        return sendImage(channel);
     };
+
+    if (path.extname(urlcache) == '.mp4') return sendImage(channel) // Return if the file is a mp4
 
     logger.log(`Sending ${urlcache} to be reviewed.`);
     let embed = new Discord.MessageEmbed()
@@ -46,7 +50,7 @@ async function sendImage(message) {
         .setImage(`${urlcache}`)
         .setColor("#004c4c")
         .setFooter(`© Copyright ChecksumDev 2020`);
-    await message.channel.send(embed).then(async (msg) => {
+    await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
         await msg.react("⛔");
@@ -88,13 +92,13 @@ async function sendImage(message) {
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(sfwembed)
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(message);
+                            return sendImage(channel);
                         }
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                 } else if (reaction.emoji.name == "❌") {
                     logger.log(`The image ${urlcache} was marked as NSFW`)
@@ -124,13 +128,13 @@ async function sendImage(message) {
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(nsfwembed)
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(message);
+                            return sendImage(channel);
                         }
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                 } else if (reaction.emoji.name == "⛔") {
                     logger.log(`The image ${urlcache} was marked as LOLI`)
@@ -160,13 +164,13 @@ async function sendImage(message) {
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         await logch.send(loliembed)
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(message);
+                            return sendImage(channel);
                         }
-                        return sendImage(message);
+                        return sendImage(channel);
                     }
                 } else if (reaction.emoji.name == "➡️") {
                     let embed = new Discord.MessageEmbed()
@@ -186,7 +190,7 @@ async function sendImage(message) {
                     await msg.reactions.removeAll();
                     await msg.edit(embed);
                     await msg.reactions.removeAll();
-                    return sendImage(message);
+                    return sendImage(channel);
                 }
             });
     });
