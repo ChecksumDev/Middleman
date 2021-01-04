@@ -13,17 +13,27 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-const Danbooru = require('danbooru');
-const booru = new Danbooru();
+const { search } = require('kaori');
+
 
 async function getBooruImage() {
     let urlcache = null;
-    await booru.posts({ tags: `${process.env.TAGS}`, limit: 90000, random: true }).then(posts => {
-        // Select a random post from posts array.
-        const index = Math.floor(Math.random() * posts.length);
-        const post = posts[index];
-        urlcache = `${booru.url(post.file_url).href}`;
-    });
-    return urlcache;
+    let random = NaN;
+
+    random = Math.floor(Math.random() * 101);
+
+    if (random >= 50) {
+        const images = await search('yandere', { limit: 1, random: true, exclude: ['gay'] });
+        images.map((post) => {
+            urlcache = `${post.fileURL}`;
+        });
+        return urlcache;
+    } else {
+        const images = await search('danbooru', { limit: 1, random: true, exclude: ['gay'] });
+        images.map((post) => {
+            urlcache = `${post.fileURL}`;
+        });
+        return urlcache;
+    }
 }
 exports.getBooruImage = getBooruImage;

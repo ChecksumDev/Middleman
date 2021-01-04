@@ -19,8 +19,6 @@
   "homepage": "https://github.com/ChecksumDev/Middleman#readme",
   "dependencies": {
     "chalk": "^4.1.0",
-    "dabi-images": "^2.7.5",
-    "danbooru": "^3.1.0",
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
     "enmap": "^5.8.2",
