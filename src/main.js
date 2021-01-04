@@ -24,11 +24,12 @@ const client = new Discord.Client();
 exports.client = client;
 
 const { sendImage } = require("./functions/sendImage");
-const { Images } = require("./functions/database");
+const { Images, User } = require("./functions/database");
 
 
 client.once("ready", async () => {
     Images.sync();
+    User.sync();
     logger.log(`${client.user.tag} (${client.user.id}) logged into the Discord API!`)
     client.user.setPresence({
         activity: {

@@ -15,8 +15,9 @@ GNU General Public License for more details.
 
 const Discord = require("discord.js");
 const { extname } = require('path');
+const { QueryTypes } = require('sequelize');
 const { client } = require("../main");
-const { Images } = require('./database');
+const { Images, User, sequelize } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 
@@ -63,15 +64,22 @@ async function sendImage(channel) {
         msg.awaitReactions(filter, { max: 1 })
             .then(async (collected) => {
                 const reaction = collected.first();
+                const result = await User.findOne({ where: { id: `${reaction.users.cache.last().id}` } }); // 573909482619273255 < CONSOLE
+                if (!result) {
+                    await User.create({
+                        id: `${reaction.users.cache.last().id}`,
+                        count: 0,
+                    });
+                }
 
                 if (reaction.emoji.name === "✅") {
                     logger.log(`The image ${urlcache} was marked as SFW`)
                     try {
-                        // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
+                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'SFW',
-                            author: `${reaction.users.cache.last().id}`,
+                            user: `${reaction.users.cache.last().id}`,
                         });
                         let sfwembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
@@ -92,6 +100,7 @@ async function sendImage(channel) {
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(sfwembed)
+                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -103,11 +112,11 @@ async function sendImage(channel) {
                 } else if (reaction.emoji.name == "❌") {
                     logger.log(`The image ${urlcache} was marked as NSFW`)
                     try {
-                        // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
+                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'NSFW',
-                            author: `${reaction.users.cache.last().id}`,
+                            user: `${reaction.users.cache.last().id}`,
                         });
                         let nsfwembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
@@ -128,6 +137,7 @@ async function sendImage(channel) {
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(nsfwembed)
+                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -139,11 +149,11 @@ async function sendImage(channel) {
                 } else if (reaction.emoji.name == "⛔") {
                     logger.log(`The image ${urlcache} was marked as LOLI`)
                     try {
-                        // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
+                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'LOLI',
-                            author: `${reaction.users.cache.last().id}`,
+                            user: `${reaction.users.cache.last().id}`,
                         });
                         let loliembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
@@ -164,6 +174,7 @@ async function sendImage(channel) {
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         await logch.send(loliembed)
+                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -175,11 +186,11 @@ async function sendImage(channel) {
                 } else if (reaction.emoji.name == "❔") {
                     logger.log(`The image ${urlcache} was marked as MISC`)
                     try {
-                        // equivalent to: INSERT INTO tags (url, rating, author) values (?, ?, ?);
+                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'MISC',
-                            author: `${reaction.users.cache.last().id}`,
+                            user: `${reaction.users.cache.last().id}`,
                         });
                         let embed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
@@ -194,11 +205,12 @@ async function sendImage(channel) {
                             }])
                             .setImage(`${urlcache}`)
                             .setColor("WHITE")
-                            .setFooter("© Copyright Checksum 2020");
+                            .setFooter(`Image ID: ${image.id}`)
                         await msg.reactions.removeAll();
                         await msg.edit(embed);
                         await msg.reactions.removeAll();
                         await logch.send(embed)
+                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {

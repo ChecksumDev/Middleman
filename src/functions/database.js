@@ -21,6 +21,7 @@ const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER
 	logging: false,
 	storage: 'database.sqlite',
 });
+exports.sequelize = sequelize;
 
 const Images = sequelize.define('images', {
 	url: {
@@ -28,7 +29,15 @@ const Images = sequelize.define('images', {
 		unique: true,
 	},
 	rating: Sequelize.STRING,
-	author: Sequelize.STRING,
+	user: Sequelize.STRING,
 });
-
 exports.Images = Images;
+
+const User = sequelize.define('users', {
+	id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+	},
+	count: Sequelize.INTEGER,
+});
+exports.User = User;

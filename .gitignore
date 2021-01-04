@@ -107,3 +107,6 @@ dist
 .tern-port
 database.sqlite
 static/
+
+# .bak files
+*.bak
