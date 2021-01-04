@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-module.exports = (client) => {
+module.exports = async (client) => {
     const { sendImage } = require("../functions/sendImage");
     const { Images, Users } = require("../functions/database");
     const logger = require("../functions/logger");
@@ -27,6 +27,8 @@ module.exports = (client) => {
         },
         status: "dnd",
     })
+
+    client.guilds.cache.get('793034391738777670').members.fetch();
 
     client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
         if (ch.name == 'review-log') return;

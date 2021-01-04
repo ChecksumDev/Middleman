@@ -19,10 +19,20 @@ exports.run = async (client, message, args) => {
     if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
     const image = await Images.findOne({ where: { id: args[0] } });
     if (!image) return message.reply("That image has not been reviewed yet.");
+    let user = await client.users.fetch(`${image.user}`);
 
     let embed = new Discord.MessageEmbed()
         .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }))
-        .setDescription(`Are you sure you want to delete the image **${args[0]}**?\nRating: ${image.rating}\n\n:warning: ***Please click the trashcan to confirm, there is no way to revert your decision.***`)
+        .addFields([{
+            name: "Rating",
+            value: `${image.rating}`,
+            inline: true
+        }, {
+            name: "Reviewer",
+            value: `${user}`,
+            inline: true,
+        }])
+        .setDescription(`Are you sure you want to delete the image **${args[0]}**?\n\n:warning: ***Please click the trashcan to confirm, there is no way to revert your decision.***`)
         .setImage(`${image.url}`)
         .setColor("RED");
     message.reply(embed).then(async (result) => {

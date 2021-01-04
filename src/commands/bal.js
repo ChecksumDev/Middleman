@@ -16,7 +16,13 @@ GNU General Public License for more details.
 exports.run = async (client, message, args) => {
     const Discord = require("discord.js");
     const { Users } = require("../functions/database");
-    const user = await Users.findOne({ where: { id: message.author.id } });
+    const user = await Users.findOne({ where: { userid: message.author.id } });
+    if (!user) {
+        await Users.create({
+            userid: `${reaction.users.cache.last().id}`,
+            count: 0,
+        });
+    }
     let embed = new Discord.MessageEmbed()
         .setAuthor(`${message.author.username}'s Balance`, `${message.author.displayAvatarURL({ dynamic: true })}`)
         .setThumbnail(`https://i.ibb.co/ByRSBmB/hp.png`)

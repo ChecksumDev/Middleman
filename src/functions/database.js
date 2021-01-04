@@ -34,10 +34,10 @@ const Images = sequelize.define('images', {
 exports.Images = Images;
 
 const Users = sequelize.define('users', {
-	id: {
-		type: Sequelize.INTEGER,
-		primaryKey: true,
+	userid: {
+		type: Sequelize.STRING,
 	},
-	count: Sequelize.INTEGER,
+	count: Sequelize.STRING,
 });
+
 exports.Users = Users;

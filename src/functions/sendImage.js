@@ -64,10 +64,10 @@ async function sendImage(channel) {
         msg.awaitReactions(filter, { max: 1 })
             .then(async (collected) => {
                 const reaction = collected.first();
-                const result = await Users.findOne({ where: { id: `${reaction.users.cache.last().id}` } }); // 573909482619273255 < CONSOLE
+                const result = await Users.findOne({ where: { userid: `${reaction.users.cache.last().id}` } });
                 if (!result) {
                     await Users.create({
-                        id: `${reaction.users.cache.last().id}`,
+                        userid: `${reaction.users.cache.last().id}`,
                         count: 0,
                     });
                 }
@@ -81,6 +81,7 @@ async function sendImage(channel) {
                             rating: 'SFW',
                             user: `${reaction.users.cache.last().id}`,
                         });
+                        await result.increment('count')
                         let sfwembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setColor("GREEN")
@@ -100,7 +101,6 @@ async function sendImage(channel) {
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(sfwembed)
-                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -118,6 +118,7 @@ async function sendImage(channel) {
                             rating: 'NSFW',
                             user: `${reaction.users.cache.last().id}`,
                         });
+                        await result.increment('count')
                         let nsfwembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setColor("RED")
@@ -137,7 +138,6 @@ async function sendImage(channel) {
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(nsfwembed)
-                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -155,6 +155,7 @@ async function sendImage(channel) {
                             rating: 'LOLI',
                             user: `${reaction.users.cache.last().id}`,
                         });
+                        await result.increment('count')
                         let loliembed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .setImage(urlcache)
@@ -174,7 +175,6 @@ async function sendImage(channel) {
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         await logch.send(loliembed)
-                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
@@ -192,6 +192,7 @@ async function sendImage(channel) {
                             rating: 'MISC',
                             user: `${reaction.users.cache.last().id}`,
                         });
+                        await result.increment('count')
                         let embed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .addFields([{
@@ -210,7 +211,6 @@ async function sendImage(channel) {
                         await msg.edit(embed);
                         await msg.reactions.removeAll();
                         await logch.send(embed)
-                        await sequelize.query(`update users set count = count + 1 where id=${reaction.users.cache.last().id}`, { type: QueryTypes.UPDATE }); // please
                         return sendImage(channel);
                     }
                     catch (e) {
