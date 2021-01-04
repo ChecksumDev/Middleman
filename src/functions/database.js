@@ -33,11 +33,11 @@ const Images = sequelize.define('images', {
 });
 exports.Images = Images;
 
-const User = sequelize.define('users', {
+const Users = sequelize.define('users', {
 	id: {
 		type: Sequelize.INTEGER,
 		primaryKey: true,
 	},
 	count: Sequelize.INTEGER,
 });
-exports.User = User;
+exports.Users = Users;

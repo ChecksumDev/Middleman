@@ -17,7 +17,7 @@ const Discord = require("discord.js");
 const { extname } = require('path');
 const { QueryTypes } = require('sequelize');
 const { client } = require("../main");
-const { Images, User, sequelize } = require('./database');
+const { Images, Users, sequelize } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 
@@ -64,9 +64,9 @@ async function sendImage(channel) {
         msg.awaitReactions(filter, { max: 1 })
             .then(async (collected) => {
                 const reaction = collected.first();
-                const result = await User.findOne({ where: { id: `${reaction.users.cache.last().id}` } }); // 573909482619273255 < CONSOLE
+                const result = await Users.findOne({ where: { id: `${reaction.users.cache.last().id}` } }); // 573909482619273255 < CONSOLE
                 if (!result) {
-                    await User.create({
+                    await Users.create({
                         id: `${reaction.users.cache.last().id}`,
                         count: 0,
                     });
