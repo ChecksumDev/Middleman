@@ -25,8 +25,6 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 exports.client = client;
 
-
-
 fs.readdir(`${__dirname}/events/`, (err, files) => {
     if (err) return console.error(err);
     files.forEach(file => {

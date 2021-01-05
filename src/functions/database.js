@@ -37,7 +37,7 @@ const Users = sequelize.define('users', {
 	userid: {
 		type: Sequelize.STRING,
 	},
-	count: Sequelize.STRING,
+	count: Sequelize.NUMBER,
 });
 
 exports.Users = Users;
