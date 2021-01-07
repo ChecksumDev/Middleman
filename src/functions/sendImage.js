@@ -49,7 +49,7 @@ async function sendImage(channel) {
         }])
         .setImage(`${urlcache}`)
         .setColor("#0D98BA")
-        .setFooter(`© Copyright Checksum 2020`);
+        .setFooter(`© Copyright Konami Development`);
     await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
