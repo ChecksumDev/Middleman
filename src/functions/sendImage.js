@@ -15,9 +15,8 @@ GNU General Public License for more details.
 
 const Discord = require("discord.js");
 const { extname } = require('path');
-const { QueryTypes } = require('sequelize');
 const { client } = require("../main");
-const { Images, Users, sequelize } = require('./database');
+const { Images, Users } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 

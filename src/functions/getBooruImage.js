@@ -23,13 +23,13 @@ async function getBooruImage() {
     random = Math.floor(Math.random() * 101);
 
     if (random >= 50) {
-        const images = await search('yandere', { limit: 1, random: true, exclude: ['gay'] });
+        let images = await search('yandere', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {
             urlcache = `${post.fileURL}`;
         });
         return urlcache;
     } else {
-        const images = await search('danbooru', { limit: 1, random: true, exclude: ['gay'] });
+        let images = await search('danbooru', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {
             urlcache = `${post.fileURL}`;
         });

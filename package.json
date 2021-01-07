@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/ChecksumDev/Middleman#readme",
   "dependencies": {
+    "@sashido/teachablemachine-node": "^1.2.1",
+    "@tensorflow/tfjs-node": "^2.8.2",
+    "@tensorflow/tfjs-node-gpu": "^2.8.2",
     "chalk": "^4.1.0",
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",

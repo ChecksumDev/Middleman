@@ -27,9 +27,7 @@ module.exports = async (client) => {
         },
         status: "dnd",
     })
-
-    client.guilds.cache.get('793034391738777670').members.fetch();
-
+    
     client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
         if (ch.name == 'review-log') return;
         if (!ch.name.startsWith("review")) return;

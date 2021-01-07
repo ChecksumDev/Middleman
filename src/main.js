@@ -15,6 +15,7 @@ GNU General Public License for more details.
 
 // Static Deps
 require("dotenv").config();
+// require('@tensorflow/tfjs-node-gpu');
 const logger = require("./functions/logger");
 
 

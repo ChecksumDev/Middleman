@@ -18,7 +18,7 @@ const { MessageEmbed } = require("discord.js");
 exports.run = async (client, message, args) => {
     const { Users } = require("../functions/database");
 
-    let users = await Users.findAll({ limit: 10, order: [['count', 'DESC']] });
+    let users = await Users.findAll({ limit: 5, order: [['count', 'DESC']] });
     for (const user of users) {
         await client.users.fetch(user.userid);
     }
@@ -28,7 +28,7 @@ exports.run = async (client, message, args) => {
             .filter(user => client.users.cache.has(user.userid))
             .map((user, position) => `**${position + 1}**. ${(client.users.cache.get(user.userid))}: ${user.count} Points`)
             .join('\n'))
-        .setThumbnail('https://i.ibb.co/ByRSBmB/hp.png')
+            .setThumbnail(`https://i.ibb.co/ByRSBmB/hp.png`)
         .setColor("#d70069");
     await message.reply(embed)
 }

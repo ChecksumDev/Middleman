@@ -19,7 +19,7 @@ exports.run = async (client, message, args) => {
     const user = await Users.findOne({ where: { userid: message.author.id } });
     if (!user) {
         await Users.create({
-            userid: `${reaction.users.cache.last().id}`,
+            userid: `${message.author.id}`,
             count: 0,
         });
     }
