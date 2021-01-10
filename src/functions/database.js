@@ -17,9 +17,9 @@ const logger = require('./logger');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
-	dialect: 'sqlite',
-	logging: false,
-	storage: 'database.sqlite',
+	dialect: 'postgres',
+	logging: logger.debug,
+	// storage: 'database.sqlite',
 });
 exports.sequelize = sequelize;
 
@@ -37,7 +37,7 @@ const Users = sequelize.define('users', {
 	userid: {
 		type: Sequelize.STRING,
 	},
-	count: Sequelize.NUMBER,
+	count: Sequelize.INTEGER,
 });
 
 exports.Users = Users;

@@ -17,7 +17,7 @@ const chalk = require('chalk');
 
 function debug(data) {
     if (!data) process.exit(1);
-    console.log(chalk.white(`[DEBUG]: ${data}`))
+    console.log(chalk.magenta(`[DEBUG]: ${data}`))
 }
 
 function log(data) {
