@@ -15,21 +15,20 @@ GNU General Public License for more details.
 
 // Static Deps
 require("dotenv").config();
-// require('@tensorflow/tfjs-node-gpu');
+const fs = require("fs");
+const path = require("path");
 const logger = require("./functions/logger");
 
-
 // Main Deps
-const fs = require('fs')
 const Enmap = require("enmap");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 exports.client = client;
 
-fs.readdir(`${__dirname}/events/`, (err, files) => {
+fs.readdir(path.join(__dirname, '/events/'), (err, files) => {
     if (err) return console.error(err);
     files.forEach(file => {
-        const event = require(`${__dirname}/events/${file}`);
+        const event = require(path.join(__dirname, `/events/${file}`));
         let eventName = file.split(".")[0];
         client.on(eventName, event.bind(null, client));
     });
@@ -37,11 +36,11 @@ fs.readdir(`${__dirname}/events/`, (err, files) => {
 
 client.commands = new Enmap();
 
-fs.readdir(`${__dirname}/commands/`, (err, files) => {
+fs.readdir(path.join(__dirname, '/commands/'), (err, files) => {
     if (err) return console.error(err);
     files.forEach(file => {
         if (!file.endsWith(".js")) return;
-        let props = require(`${__dirname}/commands/${file}`);
+        let props = require(path.join(__dirname, `/commands/${file}`));
         let commandName = file.split(".")[0];
         logger.log(`Loaded command ${commandName}`);
         client.commands.set(commandName, props);
