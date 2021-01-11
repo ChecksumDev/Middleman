@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Konami Development
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@ GNU General Public License for more details.
 
 // Static Deps
 require("dotenv").config();
+// require('@tensorflow/tfjs-node-gpu');
 const logger = require("./functions/logger");
 
 

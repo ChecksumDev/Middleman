@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Konami Development
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,9 +27,7 @@ module.exports = async (client) => {
         },
         status: "dnd",
     })
-
-    client.guilds.cache.get('793034391738777670').members.fetch();
-
+    
     client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
         if (ch.name == 'review-log') return;
         if (!ch.name.startsWith("review")) return;

@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Konami Development
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ exports.run = async (client, message, args) => {
         .setAuthor("Starboard", "https://2.bp.blogspot.com/-hsuemZmkYBo/WJibJn2XtFI/AAAAAAAAAEc/zNVuRLIoq4o_WV6QMMOqx-gOfmbsFXYJgCLcB/s1600/star-icon.png")
         .setImage(`${image.url}`)
         .setColor("YELLOW")
-        .setFooter("© Copyright Middleman 2020");
+        .setFooter("© Copyright Konami Development");
     await client.channels.cache.get('793337358866055178').send(embed).then(() => {
         message.reply(`Successfully starred image **${image.id}**.`)
     })

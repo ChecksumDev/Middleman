@@ -47,6 +47,9 @@ typings/
 # TypeScript cache
 *.tsbuildinfo
 
+# Tensorflow
+model/
+
 # Optional npm cache directory
 .npm
 

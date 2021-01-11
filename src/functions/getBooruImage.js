@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Konami Development
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@ async function getBooruImage() {
     random = Math.floor(Math.random() * 101);
 
     if (random >= 50) {
-        const images = await search('yandere', { limit: 1, random: true, exclude: ['gay'] });
+        let images = await search('yandere', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {
             urlcache = `${post.fileURL}`;
         });
         return urlcache;
     } else {
-        const images = await search('danbooru', { limit: 1, random: true, exclude: ['gay'] });
+        let images = await search('danbooru', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {
             urlcache = `${post.fileURL}`;
         });

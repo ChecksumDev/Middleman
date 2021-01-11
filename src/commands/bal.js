@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 ChecksumDev
+Copyright (C) 2020 Konami Development
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ exports.run = async (client, message, args) => {
     const user = await Users.findOne({ where: { userid: message.author.id } });
     if (!user) {
         await Users.create({
-            userid: `${reaction.users.cache.last().id}`,
+            userid: `${message.author.id}`,
             count: 0,
         });
     }

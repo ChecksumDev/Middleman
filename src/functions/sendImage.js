@@ -15,9 +15,8 @@ GNU General Public License for more details.
 
 const Discord = require("discord.js");
 const { extname } = require('path');
-const { QueryTypes } = require('sequelize');
 const { client } = require("../main");
-const { Images, Users, sequelize } = require('./database');
+const { Images, Users } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const logger = require("./logger");
 
@@ -50,7 +49,7 @@ async function sendImage(channel) {
         }])
         .setImage(`${urlcache}`)
         .setColor("#0D98BA")
-        .setFooter(`© Copyright Checksum 2020`);
+        .setFooter(`© Copyright Konami Development`);
     await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
