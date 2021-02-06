@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 Konami Development
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ GNU General Public License for more details.
 exports.run = async (client, message, args) => {
     const Discord = require("discord.js");
     const { Images } = require("../functions/database");
-    if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
+    // if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
     const image = await Images.findOne({ where: { id: args[0] } });
     if (!image) return message.reply("That image has not been reviewed yet.");
     let user = await client.users.fetch(`${image.user}`);

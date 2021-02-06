@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 Konami Development
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ async function getBooruImage() {
     let random = NaN;
 
     random = Math.floor(Math.random() * 101);
-
+    
     if (random >= 50) {
         let images = await search('yandere', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {

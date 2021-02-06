@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API's.
-Copyright (C) 2020 Konami Development
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,21 +15,42 @@ GNU General Public License for more details.
 
 const chalk = require('chalk');
 
+
+/**
+ * 
+ * @param {*} data 
+ * Text to output to console.
+ */
 function debug(data) {
     if (!data) process.exit(1);
     console.log(chalk.magenta(`[DEBUG]: ${data}`))
 }
 
+/**
+ * 
+ * @param {*} data 
+ * Text to output to console.
+ */
 function log(data) {
     if (!data) process.exit(1);
     console.log(chalk.greenBright(`[INFO]: ${data}`))
 }
 
+/**
+ * 
+ * @param {*} data 
+ * Text to output to console.
+ */
 function warn(data) {
     if (!data) process.exit(1);
     console.log(chalk.yellowBright(`[WARN]: ${data}`))
 }
 
+/**
+ * 
+ * @param {*} data 
+ * Text to output to console.
+ */
 function error(data) {
     if (!data) process.exit(1);
     console.log(chalk.redBright(`[ERROR]: ${data}`))

@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 Konami Development
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,12 +14,15 @@ GNU General Public License for more details.
 */
 
 const logger = require('./logger');
+
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
-	dialect: 'postgres',
+	dialect: 'sqlite',
 	logging: logger.debug,
-	// storage: 'database.sqlite',
+	storage: 'database.sqlite',
 });
 exports.sequelize = sequelize;
 

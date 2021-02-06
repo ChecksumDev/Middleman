@@ -14,28 +14,38 @@ GNU General Public License for more details.
 */
 
 const Discord = require("discord.js");
-const { extname } = require('path');
 const { client } = require("../main");
 const { Images, Users } = require('./database');
+const { updateTotal } = require("./updateTotal");
 const { getBooruImage } = require("./getBooruImage");
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+const adapter = new FileSync('db.json')
+const jsondb = low(adapter)
+const filesize = require('filesize');
 const logger = require("./logger");
+const { extname } = require("path");
 
-async function sendImage(channel) {
+async function startReview(channel) {
     let urlcache = await getBooruImage();
     let logch = client.channels.cache.get('793726527744245780');
-    let bannedexts = [".zip", ".mp4"]; // Deny these extensions (we do not support them) 
+    let bannedexts = [".zip", ".mp4", ".webm"]; // Deny these extensions (we do not support them) 
+    await jsondb.read(); // Load the current size of the database
 
-    if (urlcache == 'https://danbooru.donmai.us/') return sendImage(channel);
+    if (urlcache == 'https://danbooru.donmai.us/') return startReview(channel);
+    if (bannedexts.includes(extname(urlcache))) return startReview(channel) // Return if the file extension is banned.
 
     const result = await Images.findOne({ where: { url: urlcache } });
     if (result) {
         logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
-        return sendImage(channel);
+        return startReview(channel);
     };
 
-    if (extname(urlcache).includes(bannedexts)) return sendImage(channel) // Return if the file extension is banned.
+    let orfs = await jsondb.get('total').value()
+    let rfs = filesize(orfs);
 
     logger.log(`Sending ${urlcache} to be reviewed.`);
+
     let embed = new Discord.MessageEmbed()
         .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
         .addFields([{
@@ -49,7 +59,7 @@ async function sendImage(channel) {
         }])
         .setImage(`${urlcache}`)
         .setColor("#0D98BA")
-        .setFooter(`© Copyright Konami Development`);
+        .setFooter(`© Copyright Checksum | We have ${rfs} of reviewed images in our database.`);
     await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
@@ -62,11 +72,15 @@ async function sendImage(channel) {
 
         msg.awaitReactions(filter, { max: 1 })
             .then(async (collected) => {
+                await updateTotal(urlcache)
                 const reaction = collected.first();
-                const result = await Users.findOne({ where: { userid: `${reaction.users.cache.last().id}` } });
+                const user = reaction.users.cache.last();
+                const user_id = user.id;
+
+                const result = await Users.findOne({ where: { userid: `${user_id}` } });
                 if (!result) {
                     await Users.create({
-                        userid: `${reaction.users.cache.last().id}`,
+                        userid: `${user_id}`,
                         count: 0,
                     });
                 }
@@ -78,7 +92,7 @@ async function sendImage(channel) {
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'SFW',
-                            user: `${reaction.users.cache.last().id}`,
+                            user: `${user_id}`,
                         });
                         await result.increment('count')
                         let sfwembed = new Discord.MessageEmbed()
@@ -91,7 +105,7 @@ async function sendImage(channel) {
                                 inline: true
                             }, {
                                 name: "Reviewer",
-                                value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
+                                value: `${user} (${user_id})`,
                                 inline: true
                             }])
                             .setFooter(`Image ID: ${image.id}`)
@@ -100,13 +114,13 @@ async function sendImage(channel) {
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(sfwembed)
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(channel);
+                            return startReview(channel);
                         }
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                 } else if (reaction.emoji.name == "❌") {
                     logger.log(`The image ${urlcache} was marked as NSFW`)
@@ -115,7 +129,7 @@ async function sendImage(channel) {
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'NSFW',
-                            user: `${reaction.users.cache.last().id}`,
+                            user: `${user_id}`,
                         });
                         await result.increment('count')
                         let nsfwembed = new Discord.MessageEmbed()
@@ -128,7 +142,7 @@ async function sendImage(channel) {
                                 inline: true
                             }, {
                                 name: "Reviewer",
-                                value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
+                                value: `${user} (${user_id})`,
                                 inline: true
                             }])
                             .setFooter(`Image ID: ${image.id}`)
@@ -137,13 +151,13 @@ async function sendImage(channel) {
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(nsfwembed)
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(channel);
+                            return startReview(channel);
                         }
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                 } else if (reaction.emoji.name == "⛔") {
                     logger.log(`The image ${urlcache} was marked as LOLI`)
@@ -152,7 +166,7 @@ async function sendImage(channel) {
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'LOLI',
-                            user: `${reaction.users.cache.last().id}`,
+                            user: `${user_id}`,
                         });
                         await result.increment('count')
                         let loliembed = new Discord.MessageEmbed()
@@ -164,7 +178,7 @@ async function sendImage(channel) {
                                 inline: true
                             }, {
                                 name: "Reviewer",
-                                value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
+                                value: `${user} (${user_id})`,
                                 inline: true
                             }])
                             .setColor("PURPLE")
@@ -174,13 +188,13 @@ async function sendImage(channel) {
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         await logch.send(loliembed)
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(channel);
+                            return startReview(channel);
                         }
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                 } else if (reaction.emoji.name == "❔") {
                     logger.log(`The image ${urlcache} was marked as MISC`)
@@ -189,9 +203,9 @@ async function sendImage(channel) {
                         const image = await Images.create({
                             url: urlcache,
                             rating: 'MISC',
-                            user: `${reaction.users.cache.last().id}`,
+                            user: `${user_id}`,
                         });
-                        await result.increment('count')
+                        await result.increment('count');
                         let embed = new Discord.MessageEmbed()
                             .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
                             .addFields([{
@@ -200,7 +214,7 @@ async function sendImage(channel) {
                                 inline: true,
                             }, {
                                 name: "Reviewer",
-                                value: `${reaction.users.cache.last()} (${reaction.users.cache.last().id})`,
+                                value: `${user} (${user_id})`,
                                 inline: true,
                             }])
                             .setImage(`${urlcache}`)
@@ -210,17 +224,17 @@ async function sendImage(channel) {
                         await msg.edit(embed);
                         await msg.reactions.removeAll();
                         await logch.send(embed)
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                     catch (e) {
                         if (e.name === 'SequelizeUniqueConstraintError') {
-                            return sendImage(channel);
+                            return startReview(channel);
                         }
-                        return sendImage(channel);
+                        return startReview(channel);
                     }
                 }
             });
     });
 }
 
-exports.sendImage = sendImage;
+exports.startReview = startReview;

@@ -22,11 +22,12 @@
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
     "enmap": "^5.8.2",
+    "filesize": "^6.1.0",
     "kaori": "^2.0.4",
-    "keyv": "^4.0.3",
-    "nekos.life": "^2.0.7",
+    "lowdb": "^1.0.0",
     "path": "^0.12.7",
     "pg": "^8.5.1",
+    "remote-file-size": "^3.0.5",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0"
   }

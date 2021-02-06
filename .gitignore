@@ -113,3 +113,4 @@ static/
 
 # .bak files
 *.bak
+db.json

@@ -1,6 +1,6 @@
 /*
 Middleman - Peer Reviewed Image API"s.
-Copyright (C) 2020 Konami Development
+Copyright (C) 2020 Checksum
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => {
         .setTitle("You're privileges have been revoked.")
         .setDescription(`Hello ***${user}***\nYou have been revoked of your reviewing privlages due to inactivity, if you wish to reapply please message the current Head Reviewer.\n\n*If you believe this to be a mistake, please message the current head reviewer about your concerns.*`)
         .setColor("RED")
-        .setFooter("© Copyright Konami Development");
+        .setFooter("© Copyright Checksum");
         await m.send(embed);
         await message.delete();
     })

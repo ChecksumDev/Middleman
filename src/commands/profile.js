@@ -15,17 +15,17 @@ GNU General Public License for more details.
 
 exports.run = async (client, message, args) => {
     const Discord = require("discord.js");
-    const { Images } = require("../functions/database");
-    if (!message.guild.id == '793034391738777670') return;
+    const { Users } = require("../functions/database");
     // if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
-    const image = await Images.findOne({ where: { id: args[0] } });
-    if (!image) return message.reply("That image has not been reviewed yet.");
+    const user = await Users.findOne({ where: { id: message.mentions.users.first().id } });
+    if (!user) return message.reply("That user has never reviewed for Middleman.");
+    
     let embed = new Discord.MessageEmbed()
-        .setAuthor("Starboard", "https://2.bp.blogspot.com/-hsuemZmkYBo/WJibJn2XtFI/AAAAAAAAAEc/zNVuRLIoq4o_WV6QMMOqx-gOfmbsFXYJgCLcB/s1600/star-icon.png")
-        .setImage(`${image.url}`)
-        .setColor("YELLOW")
-        .setFooter("© Copyright Checksum");
-    await client.channels.cache.get('793337358866055178').send(embed).then(() => {
-        message.reply(`Successfully starred image **${image.id}**.`)
-    })
+    .setAuthor(`${message.mentions.users.first().tag}`, message.mentions.users.first().displayAvatarURL({dynamic: true}))
+    .addFields([{
+        name: "Last active",
+        value: `${user.get()}`
+    }])
+    .setColor("BLUE");
+    await message.reply(`${embed}`);
 }
