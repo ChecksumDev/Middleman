@@ -15,8 +15,6 @@ GNU General Public License for more details.
 
 const logger = require('./logger');
 
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
@@ -42,5 +40,4 @@ const Users = sequelize.define('users', {
 	},
 	count: Sequelize.INTEGER,
 });
-
 exports.Users = Users;
