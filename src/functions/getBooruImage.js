@@ -13,27 +13,29 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-const { search } = require('kaori');
+const {
+    search
+} = require('kaori');
 
 
 async function getBooruImage() {
     let urlcache = null;
-    let random = NaN;
 
-    random = Math.floor(Math.random() * 101);
-    
-    if (random >= 50) {
-        let images = await search('yandere', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
-        images.map((post) => {
-            urlcache = `${post.fileURL}`;
+    let searchsites = ["yandere", "danbooru", "konachan", "konachannet"];
+    let site = searchsites[Math.floor(Math.random() * searchsites.length)];
+    async function searchRandom(site) {
+        let images = await search(`${site}`, {
+            tags: [process.env.TAGS],
+            limit: 1,
+            random: true,
+            exclude: [process.env.TAGS_EXCLUDE]
         });
-        return urlcache;
-    } else {
-        let images = await search('danbooru', { tags: [process.env.TAGS], limit: 1, random: true, exclude: [process.env.TAGS_EXCLUDE] });
         images.map((post) => {
             urlcache = `${post.fileURL}`;
         });
         return urlcache;
     }
+    return await searchRandom(site);
 }
+
 exports.getBooruImage = getBooruImage;

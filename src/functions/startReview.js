@@ -32,7 +32,6 @@ async function startReview(channel) {
     let bannedexts = [".zip", ".mp4", ".webm"]; // Deny these extensions (we do not support them) 
     await jsondb.read(); // Load the current size of the database
 
-    if (urlcache == 'https://danbooru.donmai.us/') return startReview(channel);
     if (bannedexts.includes(extname(urlcache))) return startReview(channel) // Return if the file extension is banned.
 
     const result = await Images.findOne({ where: { url: urlcache } });

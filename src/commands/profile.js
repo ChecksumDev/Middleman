@@ -14,18 +14,34 @@ GNU General Public License for more details.
 */
 
 exports.run = async (client, message, args) => {
-    const Discord = require("discord.js");
-    const { Users } = require("../functions/database");
-    // if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
-    const user = await Users.findOne({ where: { id: message.mentions.users.first().id } });
-    if (!user) return message.reply("That user has never reviewed for Middleman.");
-    
-    let embed = new Discord.MessageEmbed()
-    .setAuthor(`${message.mentions.users.first().tag}`, message.mentions.users.first().displayAvatarURL({dynamic: true}))
-    .addFields([{
+  const Discord = require("discord.js");
+  const { Users } = require("../functions/database");
+  // if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
+  const user = await Users.findOne({
+    where: {
+      userid: message.mentions.users.first().id,
+    },
+  });
+  if (!user)
+    return message.reply("That user has never reviewed for Middleman.");
+
+  let embed = new Discord.MessageEmbed()
+    .setAuthor(
+      `${message.mentions.users.first().tag}`,
+      message.mentions.users.first().displayAvatarURL({
+        dynamic: true,
+      })
+    )
+    .addFields([
+      {
+        name: "Balance",
+        value: `${user.get("count")}`,
+      },
+      {
         name: "Last active",
-        value: `${user.get()}`
-    }])
+        value: `${user.get("updatedAt")}`,
+      },
+    ])
     .setColor("BLUE");
-    await message.reply(`${embed}`);
-}
+  await message.reply(embed);
+};
