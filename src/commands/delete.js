@@ -49,7 +49,7 @@ exports.run = async (client, message, args) => {
                     await result.delete();
                     return message.reply(`The image **${args[0]}** has been marked for review.`);
                 } else {
-                    return message.reply("You cancled the deletion.");
+                    return message.reply("You canceled the deletion.");
                 }
             })
     })
