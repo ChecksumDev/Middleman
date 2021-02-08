@@ -18,12 +18,9 @@ const logger = require('./logger');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
-	dialect: 'postgres',
+	dialect: 'sqlite',
+	storage: 'database.sqlite',
 	logging: logger.debug,
-	dialectOptions: {
-		useUTC: false //for reading from database
-	},
-	timezone: '-06:00' //for writing to database
 });
 exports.sequelize = sequelize;
 
