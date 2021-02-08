@@ -16,7 +16,9 @@ GNU General Public License for more details.
 exports.run = async (client, message, args) => {
   const Discord = require("discord.js");
   const { Users } = require("../functions/database");
-  // if (!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true })) return message.reply("No permission.")
+  
+  if (!args[0]) return message.reply("Please mention a user!");
+
   const user = await Users.findOne({
     where: {
       userid: message.mentions.users.first().id,
