@@ -20,8 +20,10 @@ const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER
 	host: `${process.env.DB_HOST}`,
 	dialect: 'postgres',
 	logging: logger.debug,
-	// storage: 'database.sqlite',
-	timezone: 'America/Chicago',
+	dialectOptions: {
+		useUTC: false //for reading from database
+	},
+	timezone: '-06:00' //for writing to database
 });
 exports.sequelize = sequelize;
 
