@@ -29,7 +29,7 @@ exports.sequelize = sequelize;
 
 const Images = sequelize.define('images', {
 	url: {
-		type: Sequelize.TEXT,
+		type: Sequelize.STRING(1000),
 		unique: true,
 	},
 	rating: Sequelize.STRING,
