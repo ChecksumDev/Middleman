@@ -18,8 +18,8 @@ const logger = require('./logger');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(`${process.env.DB_NAME}`, `${process.env.DB_USER}`, `${process.env.DB_PASS}`, {
 	host: `${process.env.DB_HOST}`,
-	dialect: 'sqlite',
-	storage: 'database.sqlite',
+	dialect: `${process.env.DB_TYPE}`,
+	// storage: 'database.sqlite',
 	logging: logger.debug,
 });
 exports.sequelize = sequelize;
