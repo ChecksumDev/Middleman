@@ -109,7 +109,6 @@ async function startReview(channel) {
                             }])
                             .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
-                        await msg.reactions.removeAll();
                         await msg.edit(sfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(sfwembed)
@@ -146,7 +145,6 @@ async function startReview(channel) {
                             }])
                             .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
-                        await msg.reactions.removeAll();
                         await msg.edit(nsfwembed);
                         await msg.reactions.removeAll();
                         await logch.send(nsfwembed)
@@ -183,7 +181,6 @@ async function startReview(channel) {
                             .setColor("PURPLE")
                             .setFooter(`Image ID: ${image.id}`)
                             .setTimestamp();
-                        await msg.reactions.removeAll();
                         await msg.edit(loliembed);
                         await msg.reactions.removeAll();
                         await logch.send(loliembed)
@@ -219,7 +216,6 @@ async function startReview(channel) {
                             .setImage(`${urlcache}`)
                             .setColor("WHITE")
                             .setFooter(`Image ID: ${image.id}`)
-                        await msg.reactions.removeAll();
                         await msg.edit(embed);
                         await msg.reactions.removeAll();
                         await logch.send(embed)
