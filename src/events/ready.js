@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 module.exports = async (client) => {
     const { startReview } = require("../functions/startReview");
-    const { Images, Users, meta } = require("../functions/database");
+    const { Images, Users } = require("../functions/database");
 
     const logger = require("../functions/logger");
     Images.sync();
@@ -30,8 +30,8 @@ module.exports = async (client) => {
 
     client.guilds.cache.get('793034391738777670').channels.cache.forEach(async ch => {
         if (ch.name == 'review-log') return;
-        if (!ch.name.startsWith("review")) return;
+        if (!ch.name.startsWith("review-")) return;
         await ch.send("The bot was restarted, rebooting review process.");
         startReview(ch);
-    })
+    });
 }

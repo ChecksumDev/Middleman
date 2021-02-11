@@ -20,7 +20,7 @@ exports.run = async (client, message, args) => {
     await user.roles.remove('793034521581846568').then(async m => {
         let embed = new Discord.MessageEmbed()
         .setTitle("You're privileges have been revoked.")
-        .setDescription(`Hello ***${user}***\nYou have been revoked of your reviewing privlages due to inactivity, if you wish to reapply please message the current Head Reviewer.\n\n*If you believe this to be a mistake, please message the current head reviewer about your concerns.*`)
+        .setDescription(`Hello ***${user}***\nYou have been revoked of your reviewing privlages by ***${message.author.tag}***, if you wish to reapply please message the current Head Reviewer.\n\n*If you believe this to be a mistake, please message the current head reviewer about your concerns.*`)
         .setColor("RED")
         .setFooter("© Copyright Checksum");
         await m.send(embed);

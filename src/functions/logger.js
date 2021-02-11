@@ -14,7 +14,16 @@ GNU General Public License for more details.
 */
 
 const chalk = require('chalk');
+const fs = require('fs');
 
+/**
+ * 
+ * @param {*} data 
+ * Text to output to latest.log.
+ */
+function logFile(data) {
+    fs.appendFileSync(`latest.log`, `\n${data}`)
+}
 
 /**
  * 
@@ -23,6 +32,7 @@ const chalk = require('chalk');
  */
 function debug(data) {
     if (!data) process.exit(1);
+    logFile(data);
     console.log(chalk.magenta(`[DEBUG]: ${data}`))
 }
 
@@ -33,6 +43,7 @@ function debug(data) {
  */
 function log(data) {
     if (!data) process.exit(1);
+    logFile(data);
     console.log(chalk.greenBright(`[INFO]: ${data}`))
 }
 
@@ -43,6 +54,7 @@ function log(data) {
  */
 function warn(data) {
     if (!data) process.exit(1);
+    logFile(data);
     console.log(chalk.yellowBright(`[WARN]: ${data}`))
 }
 
@@ -53,6 +65,7 @@ function warn(data) {
  */
 function error(data) {
     if (!data) process.exit(1);
+    logFile(data);
     console.log(chalk.redBright(`[ERROR]: ${data}`))
 }
 
