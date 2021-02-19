@@ -26,13 +26,13 @@
     "filesize": "^6.1.0",
     "kaori": "^2.0.4",
     "lowdb": "^1.0.0",
-    "mariadb": "^2.5.2",
+    "mariadb": "^2.5.3",
     "path": "^0.12.7",
     "remote-file-size": "^3.0.5",
     "request": "^2.88.2",
-    "sequelize": "^6.3.5",
+    "sequelize": "^6.5.0",
     "setimmediate": "^1.0.5",
     "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1"
+    "sqlite3": "^5.0.2"
   }
 }
