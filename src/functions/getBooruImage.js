@@ -12,27 +12,20 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
-
-const {
-    search
-} = require('kaori');
-
+const Booru = require('booru');
 
 async function getBooruImage() {
     let urlcache = null;
+    let args = [];
 
-    let searchsites = ["yandere", "danbooru", "konachan", "konachannet"];
+    let searchsites = ["kc", "kn", "yd", "db"];
     let site = searchsites[Math.floor(Math.random() * searchsites.length)];
     async function searchRandom(site) {
-        let images = await search(`${site}`, {
-            tags: [process.env.TAGS],
-            limit: 1,
-            random: true,
-            exclude: [process.env.TAGS_EXCLUDE]
-        });
-        images.map((post) => {
-            urlcache = `${post.fileURL}`;
-        });
+        await Booru.search(`${site}`, args, { limit: 1, random: true, nsfw: true })
+            .then(async posts => {
+                for (let post of posts)
+                urlcache = post.fileUrl;
+            })
         return urlcache;
     }
     return await searchRandom(site);

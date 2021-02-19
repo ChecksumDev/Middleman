@@ -25,6 +25,7 @@ const jsondb = low(adapter)
 const filesize = require('filesize');
 const logger = require("./logger");
 const { extname } = require("path");
+const { createImage } = require("./createImage");
 
 async function startReview(channel) {
     let urlcache = await getBooruImage();
@@ -83,150 +84,141 @@ async function startReview(channel) {
                         count: 0,
                     });
                 }
-
-                if (reaction.emoji.name === "✅") {
-                    logger.log(`The image ${urlcache} was marked as SFW`)
-                    try {
-                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
-                        const image = await Images.create({
-                            url: urlcache,
-                            rating: 'SFW',
-                            user: `${user_id}`,
-                        });
-                        await result.increment('count')
-                        let sfwembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
-                            .setColor("GREEN")
-                            .setImage(urlcache)
-                            .addFields([{
-                                name: "Rating",
-                                value: "Safe for work.",
-                                inline: true
-                            }, {
-                                name: "Reviewer",
-                                value: `${user} (${user_id})`,
-                                inline: true
-                            }])
-                            .setFooter(`Image ID: ${image.id}`)
-                            .setTimestamp();
-                        await msg.edit(sfwembed);
-                        await msg.reactions.removeAll();
-                        await logch.send(sfwembed)
-                        return startReview(channel);
-                    }
-                    catch (e) {
-                        if (e.name === 'SequelizeUniqueConstraintError') {
+                switch (reaction.emoji.name) {
+                    case "✅":
+                        logger.log(`The image ${urlcache} was marked as SFW`)
+                        try {
+                            // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
+                            const image = await createImage(urlcache, user_id, "SFW");
+                            await result.increment('count')
+                            let sfwembed = new Discord.MessageEmbed()
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setColor("GREEN")
+                                .setImage(urlcache)
+                                .addFields([{
+                                    name: "Rating",
+                                    value: "Safe for work.",
+                                    inline: true
+                                }, {
+                                    name: "Reviewer",
+                                    value: `${user} (${user_id})`,
+                                    inline: true
+                                }])
+                                .setFooter(`Image ID: ${image.id}`)
+                                .setTimestamp();
+                            await msg.edit(sfwembed);
+                            await msg.reactions.removeAll();
+                            await logch.send(sfwembed)
                             return startReview(channel);
                         }
-                        return startReview(channel);
-                    }
-                } else if (reaction.emoji.name == "❌") {
-                    logger.log(`The image ${urlcache} was marked as NSFW`)
-                    try {
-                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
-                        const image = await Images.create({
-                            url: urlcache,
-                            rating: 'NSFW',
-                            user: `${user_id}`,
-                        });
-                        await result.increment('count')
-                        let nsfwembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
-                            .setColor("RED")
-                            .setImage(urlcache)
-                            .addFields([{
-                                name: "Rating",
-                                value: "Not safe for work.",
-                                inline: true
-                            }, {
-                                name: "Reviewer",
-                                value: `${user} (${user_id})`,
-                                inline: true
-                            }])
-                            .setFooter(`Image ID: ${image.id}`)
-                            .setTimestamp();
-                        await msg.edit(nsfwembed);
-                        await msg.reactions.removeAll();
-                        await logch.send(nsfwembed)
-                        return startReview(channel);
-                    }
-                    catch (e) {
-                        if (e.name === 'SequelizeUniqueConstraintError') {
+                        catch (e) {
+                            if (e.name === 'SequelizeUniqueConstraintError') {
+                                return startReview(channel);
+                            }
                             return startReview(channel);
                         }
-                        return startReview(channel);
-                    }
-                } else if (reaction.emoji.name == "⛔") {
-                    logger.log(`The image ${urlcache} was marked as LOLI`)
-                    try {
-                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
-                        const image = await Images.create({
-                            url: urlcache,
-                            rating: 'LOLI',
-                            user: `${user_id}`,
-                        });
-                        await result.increment('count')
-                        let loliembed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
-                            .setImage(urlcache)
-                            .addFields([{
-                                name: "Rating",
-                                value: "Loli.",
-                                inline: true
-                            }, {
-                                name: "Reviewer",
-                                value: `${user} (${user_id})`,
-                                inline: true
-                            }])
-                            .setColor("PURPLE")
-                            .setFooter(`Image ID: ${image.id}`)
-                            .setTimestamp();
-                        await msg.edit(loliembed);
-                        await msg.reactions.removeAll();
-                        await logch.send(loliembed)
-                        return startReview(channel);
-                    }
-                    catch (e) {
-                        if (e.name === 'SequelizeUniqueConstraintError') {
+                    case "❌":
+                        logger.log(`The image ${urlcache} was marked as NSFW`)
+                        try {
+                            // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
+                            const image = await createImage(urlcache, user_id, "NSFW");
+                            await result.increment('count')
+                            let nsfwembed = new Discord.MessageEmbed()
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setColor("RED")
+                                .setImage(urlcache)
+                                .addFields([{
+                                    name: "Rating",
+                                    value: "Not safe for work.",
+                                    inline: true
+                                }, {
+                                    name: "Reviewer",
+                                    value: `${user} (${user_id})`,
+                                    inline: true
+                                }])
+                                .setFooter(`Image ID: ${image.id}`)
+                                .setTimestamp();
+                            await msg.edit(nsfwembed);
+                            await msg.reactions.removeAll();
+                            await logch.send(nsfwembed)
                             return startReview(channel);
                         }
-                        return startReview(channel);
-                    }
-                } else if (reaction.emoji.name == "❔") {
-                    logger.log(`The image ${urlcache} was marked as MISC`)
-                    try {
-                        // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
-                        const image = await Images.create({
-                            url: urlcache,
-                            rating: 'MISC',
-                            user: `${user_id}`,
-                        });
-                        await result.increment('count');
-                        let embed = new Discord.MessageEmbed()
-                            .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
-                            .addFields([{
-                                name: 'Rating',
-                                value: 'Image does not apply to classification.',
-                                inline: true,
-                            }, {
-                                name: "Reviewer",
-                                value: `${user} (${user_id})`,
-                                inline: true,
-                            }])
-                            .setImage(`${urlcache}`)
-                            .setColor("WHITE")
-                            .setFooter(`Image ID: ${image.id}`)
-                        await msg.edit(embed);
-                        await msg.reactions.removeAll();
-                        await logch.send(embed)
-                        return startReview(channel);
-                    }
-                    catch (e) {
-                        if (e.name === 'SequelizeUniqueConstraintError') {
+                        catch (e) {
+                            if (e.name === 'SequelizeUniqueConstraintError') {
+                                return startReview(channel);
+                            }
                             return startReview(channel);
                         }
-                        return startReview(channel);
-                    }
+                    case "⛔":
+                        logger.log(`The image ${urlcache} was marked as LOLI`)
+                        try {
+                            // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
+                            const image = await createImage(urlcache, user_id, "LOLI");
+                            await result.increment('count')
+                            let loliembed = new Discord.MessageEmbed()
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setImage(urlcache)
+                                .addFields([{
+                                    name: "Rating",
+                                    value: "Loli.",
+                                    inline: true
+                                }, {
+                                    name: "Reviewer",
+                                    value: `${user} (${user_id})`,
+                                    inline: true
+                                }])
+                                .setColor("PURPLE")
+                                .setFooter(`Image ID: ${image.id}`)
+                                .setTimestamp();
+                            await msg.edit(loliembed);
+                            await msg.reactions.removeAll();
+                            await logch.send(loliembed)
+                            return startReview(channel);
+                        }
+                        catch (e) {
+                            if (e.name === 'SequelizeUniqueConstraintError') {
+                                return startReview(channel);
+                            }
+                            return startReview(channel);
+                        }
+                    case "❔":
+                        logger.log(`The image ${urlcache} was marked as MISC`)
+                        try {
+                            // equivalent to: INSERT INTO tags (url, rating, user) values (?, ?, ?);
+                            const image = await Images.create({
+                                url: urlcache,
+                                rating: 'MISC',
+                                user: `${user_id}`,
+                            });
+                            await result.increment('count');
+                            let embed = new Discord.MessageEmbed()
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .addFields([{
+                                    name: 'Rating',
+                                    value: 'Image does not apply to classification.',
+                                    inline: true,
+                                }, {
+                                    name: "Reviewer",
+                                    value: `${user} (${user_id})`,
+                                    inline: true,
+                                }])
+                                .setImage(`${urlcache}`)
+                                .setColor("WHITE")
+                                .setFooter(`Image ID: ${image.id}`)
+                            await msg.edit(embed);
+                            await msg.reactions.removeAll();
+                            await logch.send(embed)
+                            return startReview(channel);
+                        }
+                        catch (e) {
+                            if (e.name === 'SequelizeUniqueConstraintError') {
+                                return startReview(channel);
+                            }
+                            return startReview(channel);
+                        }
+                    default:
+                        logger.error("Something has very gone wrong, a reaction was interpreted where it should not be possible.")
+                        process.exit(1);
                 }
             });
     });

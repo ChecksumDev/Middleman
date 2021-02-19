@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ChecksumDev/Middleman#readme",
   "dependencies": {
+    "booru": "^2.4.0",
     "chalk": "^4.1.0",
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
