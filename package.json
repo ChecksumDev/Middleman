@@ -20,7 +20,7 @@
   "dependencies": {
     "booru": "^2.4.0",
     "chalk": "^4.1.0",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "enmap": "^5.8.2",
     "filesize": "^6.1.0",
