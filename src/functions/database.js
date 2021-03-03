@@ -42,3 +42,15 @@ const Users = sequelize.define('users', {
 	count: Sequelize.INTEGER,
 });
 exports.Users = Users;
+
+const Apikeys = sequelize.define('apikeys', {
+	key: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+	user: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+});
+exports.Apikeys = Apikeys;
