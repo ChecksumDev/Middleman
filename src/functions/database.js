@@ -32,6 +32,7 @@ const Images = sequelize.define('images', {
 	rating: Sequelize.STRING,
 	user: Sequelize.STRING,
 });
+
 exports.Images = Images;
 
 const Users = sequelize.define('users', {

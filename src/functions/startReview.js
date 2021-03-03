@@ -16,22 +16,15 @@ GNU General Public License for more details.
 const Discord = require("discord.js");
 const { client } = require("../main");
 const { Images, Users } = require('./database');
-const { updateTotal } = require("./updateTotal");
 const { getBooruImage } = require("./getBooruImage");
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('db.json')
-const jsondb = low(adapter)
-const filesize = require('filesize');
-const logger = require("./logger");
-const { extname } = require("path");
 const { createImage } = require("./createImage");
+const { extname } = require("path");
+const logger = require("./logger");
 
 async function startReview(channel) {
     let urlcache = await getBooruImage();
     let logch = client.channels.cache.get('793726527744245780');
     let bannedexts = [".zip", ".mp4", ".webm"]; // Deny these extensions (we do not support them) 
-    await jsondb.read(); // Load the current size of the database
 
     if (bannedexts.includes(extname(urlcache))) return startReview(channel) // Return if the file extension is banned.
 
@@ -40,9 +33,6 @@ async function startReview(channel) {
         logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
         return startReview(channel);
     };
-
-    let orfs = await jsondb.get('total').value()
-    let rfs = filesize(orfs);
 
     logger.log(`Sending ${urlcache} to be reviewed.`);
 
@@ -59,7 +49,7 @@ async function startReview(channel) {
         }])
         .setImage(`${urlcache}`)
         .setColor("#0D98BA")
-        .setFooter(`© Copyright Checksum | We have ${rfs} of reviewed images in our database.`);
+        .setFooter(`© Copyright Checksum`);
     await channel.send(embed).then(async (msg) => {
         await msg.react("✅");
         await msg.react("❌");
@@ -72,7 +62,6 @@ async function startReview(channel) {
 
         msg.awaitReactions(filter, { max: 1 })
             .then(async (collected) => {
-                await updateTotal(urlcache)
                 const reaction = collected.first();
                 const user = reaction.users.cache.last();
                 const user_id = user.id;
