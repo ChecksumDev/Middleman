@@ -18,22 +18,16 @@ const { client } = require("../main");
 const { Images, Users } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const { createImage } = require("./createImage");
-const { extname } = require("path");
 const logger = require("./logger");
 
 async function startReview(channel) {
-    let urlcache = await getBooruImage();
+    let urlcache = await getBooruImage(false);
+    if (urlcache == null) {
+        logger.error("No images with the specified tag(s) could be found. Activating override.")
+        return getBooruImage(true);
+    }
+
     let logch = client.channels.cache.get('793726527744245780');
-    let bannedexts = [".zip", ".mp4", ".webm"]; // Deny these extensions (we do not support them) 
-
-    if (bannedexts.includes(extname(urlcache))) return startReview(channel) // Return if the file extension is banned.
-
-    const result = await Images.findOne({ where: { url: urlcache } });
-    if (result) {
-        logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
-        return startReview(channel);
-    };
-
     logger.log(`Sending ${urlcache} to be reviewed.`);
 
     let embed = new Discord.MessageEmbed()

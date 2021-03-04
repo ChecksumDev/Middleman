@@ -13,22 +13,35 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 const Booru = require('booru');
+const { Images } = require('./database');
+const { error } = require('./logger');
 
-async function getBooruImage() {
+async function getBooruImage(override) {
     let urlcache = null;
-    let args = [process.env.TAGS];
+    let args = [];
+    if (!override) args = [process.env.TAGS];
 
     let searchsites = ["kc", "kn", "yd", "db"];
     let site = searchsites[Math.floor(Math.random() * searchsites.length)];
-    async function searchRandom(site) {
-        await Booru.search(`${site}`, args, { limit: 1, random: true, nsfw: true })
-            .then(async posts => {
-                for (let post of posts)
+
+    await Booru.search(`${site}`, args, { limit: 1, random: true, nsfw: true })
+        .then(async posts => {
+            for (let post of posts) {
                 urlcache = post.fileUrl;
-            })
-        return urlcache;
-    }
-    return await searchRandom(site);
+
+                let bannedexts = ["zip", "mp4", "webm"]; // Deny these extensions (we do not support them) 
+                let ext = urlcache.split('.').pop();
+                if (bannedexts.includes(ext)) return getBooruImage();
+
+                const result = await Images.findOne({ where: { url: urlcache } });
+                if (result) {
+                    logger.log(`Skipping ${urlcache}. The image has already been reviewed.`);
+                    return getBooruImage();
+                };
+                continue;
+            }
+        })
+    return urlcache;
 }
 
 exports.getBooruImage = getBooruImage;
