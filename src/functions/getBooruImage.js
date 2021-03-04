@@ -16,7 +16,7 @@ const Booru = require('booru');
 
 async function getBooruImage() {
     let urlcache = null;
-    let args = [];
+    let args = [process.env.TAGS];
 
     let searchsites = ["kc", "kn", "yd", "db"];
     let site = searchsites[Math.floor(Math.random() * searchsites.length)];
