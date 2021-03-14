@@ -14,6 +14,7 @@ GNU General Public License for more details.
 */
 
 const { MessageEmbed } = require("discord.js");
+const { buildErrorMessage } = require("../functions/buildErrorMessage");
 
 exports.run = async (client, message, args) => {
     const { Apikeys } = require("../functions/database");
@@ -32,5 +33,9 @@ exports.run = async (client, message, args) => {
         .setDescription(`USER: ${args[0]}\nKEY: ||${genkey}||`)
         .setFooter(`© Copyright Checksum`)
         .setColor("YELLOW");
-    await message.author.send(embed);
+    await message.author.send(embed).then(async () => {
+        await message.channel.send(`Successfully generated an API Key.\nCheck your DMs.`)        
+    }).catch((err) => {
+        if (err) message.channel.send(buildErrorMessage("Failed to send a message to that user."))
+    });;
 }

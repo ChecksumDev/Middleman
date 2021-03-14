@@ -19,6 +19,7 @@ const { Images, Users } = require('./database');
 const { getBooruImage } = require("./getBooruImage");
 const { createImage } = require("./createImage");
 const logger = require("./logger");
+const { buildErrorMessage } = require("./buildErrorMessage");
 
 async function startReview(channel) {
     let urlcache = await getBooruImage(false);
@@ -31,7 +32,7 @@ async function startReview(channel) {
     logger.log(`Sending ${urlcache} to be reviewed.`);
 
     let embed = new Discord.MessageEmbed()
-        .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+        .setAuthor("Image not loading? Click here!", client.user.displayAvatarURL({ dynamic: true }), `${urlcache}`)
         .addFields([{
             name: 'Rating',
             value: 'None',
@@ -75,7 +76,7 @@ async function startReview(channel) {
                             const image = await createImage(urlcache, user_id, "SFW");
                             await result.increment('count')
                             let sfwembed = new Discord.MessageEmbed()
-                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `${urlcache}`)
                                 .setColor("GREEN")
                                 .setImage(urlcache)
                                 .addFields([{
@@ -107,7 +108,7 @@ async function startReview(channel) {
                             const image = await createImage(urlcache, user_id, "NSFW");
                             await result.increment('count')
                             let nsfwembed = new Discord.MessageEmbed()
-                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `${urlcache}`)
                                 .setColor("RED")
                                 .setImage(urlcache)
                                 .addFields([{
@@ -139,7 +140,7 @@ async function startReview(channel) {
                             const image = await createImage(urlcache, user_id, "LOLI");
                             await result.increment('count')
                             let loliembed = new Discord.MessageEmbed()
-                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `${urlcache}`)
                                 .setImage(urlcache)
                                 .addFields([{
                                     name: "Rating",
@@ -150,7 +151,7 @@ async function startReview(channel) {
                                     value: `${user} (${user_id})`,
                                     inline: true
                                 }])
-                                .setColor("PURPLE")
+                k                .setColor("PURPLE")
                                 .setFooter(`Image ID: ${image.id}`)
                                 .setTimestamp();
                             await msg.edit(loliembed);
@@ -175,7 +176,7 @@ async function startReview(channel) {
                             });
                             await result.increment('count');
                             let embed = new Discord.MessageEmbed()
-                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `https://saucenao.com/search.php?db=999&url=${urlcache}`)
+                                .setAuthor("Middleman", client.user.displayAvatarURL({ dynamic: true }), `${urlcache}`)
                                 .addFields([{
                                     name: 'Rating',
                                     value: 'Image does not apply to classification.',
@@ -195,11 +196,13 @@ async function startReview(channel) {
                         }
                         catch (e) {
                             if (e.name === 'SequelizeUniqueConstraintError') {
+                                msg.channel.send(buildErrorMessage(`SequelizeUniqueConstraintError`));
                                 return startReview(channel);
                             }
                             return startReview(channel);
                         }
                     default:
+                        msg.channel.send(buildErrorMessage(`Something has very gone wrong, a reaction was interpreted where it should not be possible.`));
                         logger.error("Something has very gone wrong, a reaction was interpreted where it should not be possible.")
                         process.exit(1);
                 }
