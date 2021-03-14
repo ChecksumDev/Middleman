@@ -21,21 +21,23 @@ exports.run = async (client, message, args) => {
     const hat = require('hat');
     if (message.author.id !== '573909482619273255') return message.reply("Only Checksum#0001 can generate API keys for users.");
     const key = await Apikeys.findOne({ where: { user: args[0] } });
-    if (key) return message.reply("That user already has an API key assigned.");
-    let genkey = hat().toUpperCase();
-    await Apikeys.create({
-        key: genkey,
+    if (key) return message.reply(buildErrorMessage("That user already has an API key assigned."));
+    let generated = await Apikeys.create({
+        key: hat().toUpperCase(),
         user: `${args[0]}`,
     });
 
     let embed = new MessageEmbed()
         .setTitle("Key generated")
-        .setDescription(`USER: ${args[0]}\nKEY: ||${genkey}||`)
+        .setDescription(`USER: ${args[0]}\nKEY: ||${generated.key}||`)
         .setFooter(`© Copyright Checksum`)
         .setColor("YELLOW");
     await message.author.send(embed).then(async () => {
-        await message.channel.send(`Successfully generated an API Key.\nCheck your DMs.`)        
-    }).catch((err) => {
-        if (err) message.channel.send(buildErrorMessage("Failed to send a message to that user."))
+        await message.channel.send(`Successfully generated an API Key.\nCheck your DMs.`)
+    }).catch(async (err) => {
+        if (err) {
+            await message.channel.send(buildErrorMessage("Failed to send a message to that user."))
+            return await generated.destroy();
+        }
     });;
 }
