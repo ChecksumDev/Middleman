@@ -13,13 +13,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+const hat = require('hat');
 const { MessageEmbed } = require("discord.js");
+const { Apikeys } = require("../functions/database");
 const { buildErrorMessage } = require("../functions/buildErrorMessage");
 
 exports.run = async (client, message, args) => {
-    const { Apikeys } = require("../functions/database");
-    const hat = require('hat');
-    if (message.author.id !== '573909482619273255') return message.reply("Only Checksum#0001 can generate API keys for users.");
+    if (message.author.id !== '573909482619273255') return message.reply(buildErrorMessage("Only Checksum#0001 can generate API keys for users."));
     const key = await Apikeys.findOne({ where: { user: args[0] } });
     if (key) return message.reply(buildErrorMessage("That user already has an API key assigned."));
     let generated = await Apikeys.create({
@@ -29,7 +29,7 @@ exports.run = async (client, message, args) => {
 
     let embed = new MessageEmbed()
         .setTitle("Key generated")
-        .setDescription(`USER: ${args[0]}\nKEY: ||${generated.key}||`)
+        .setDescription(`👤 USER: ${args[0]}\n🔑 KEY: ||${generated.key}||`)
         .setFooter(`© Copyright Checksum`)
         .setColor("YELLOW");
     await message.author.send(embed).then(async () => {
