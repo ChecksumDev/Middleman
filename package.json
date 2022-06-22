@@ -34,6 +34,6 @@
     "sequelize": "^6.6.5",
     "setimmediate": "^1.0.5",
     "sqlite": "^4.0.23",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.3"
   }
 }
